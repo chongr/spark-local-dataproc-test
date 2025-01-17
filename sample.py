@@ -1,11 +1,11 @@
 from pyspark.sql import SparkSession
+import arrow
 
 
 def main():
     # Initialize SparkSession
     spark = SparkSession.builder \
         .appName("HelloWorld") \
-        .master("spark://spark:7077") \
         .getOrCreate()
 
     # Create an RDD containing numbers from 1 to 1000
@@ -13,6 +13,7 @@ def main():
 
     # Count the elements in the RDD
     count = numbers_rdd.count()
+    print(f"current time from arrow: {arrow.utcnow()}")
 
     print(f"Count of numbers from 1 to 1000 is: {count}")
 
