@@ -4,7 +4,8 @@ services:
   spark:
     build:
       context: .
-      target: builder
+      args:
+        TARGET: dev
     environment:
       - SPARK_MODE=master
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
@@ -21,7 +22,8 @@ services:
   spark-worker:
     build:
       context: .
-      target: builder
+      args:
+        TARGET: dev
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark:7077

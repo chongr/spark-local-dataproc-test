@@ -1,15 +1,10 @@
-FROM bitnami/spark:3.5-debian-12 AS builder
+ARG TARGET="cloud"
+
+FROM bitnami/spark:3.5-debian-12 AS dev
 # FROM us-central1-docker.pkg.dev/cloud-dataproc/spark/dataproc_2.0:3.1-dataproc-19
 
-# Custom logging
-COPY log4j2.properties /opt/bitnami/spark/conf/log4j2.properties
-
-# any files/libraries you need on the cluster, install here ie:
-RUN pip install py4j==0.10.9.7
-RUN pip install arrow
-
 ###############################################################
-FROM builder AS cloud
+FROM python:3.9.21-bookworm AS cloud
 
 # Suppress interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
@@ -27,3 +22,14 @@ ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
 RUN groupadd -g 1099 spark
 RUN useradd -u 1099 -g 1099 -d /home/spark -m spark
 USER spark
+
+#############################################################
+# steps in common
+FROM ${TARGET}
+# Custom logging
+COPY log4j2.properties /opt/bitnami/spark/conf/log4j2.properties
+
+# any files/libraries you need on the cluster, install here ie:
+RUN pip install py4j==0.10.9.7
+RUN pip install arrow
+
